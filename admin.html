@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Alloexpo · Admin</title>
+<link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png">
+<style>
+:root{--bg:#f3ecdf;--card:#fffaf1;--ink:#2a1c27;--mut:#7c6b6e;--line:#e4d8c4;--acc:#a8371f;--blue:#27308c;--ok:#2e7d4f;--bad:#b3261e}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;padding-bottom:96px}
+.w{max-width:860px;margin:0 auto;padding:14px}
+header{background:linear-gradient(180deg,#7d2a22,#cf5a22 60%,#eaa23a);color:#fff7ea;border-radius:18px;padding:16px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+header h1{margin:0;font:700 24px/1 Georgia,serif}header a{color:#fff7ea;font-size:13px}
+.st{margin:10px 2px;color:var(--mut);font-size:13px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+.tabs{display:flex;gap:6px;margin:12px 0;flex-wrap:wrap}.tabs button{flex:1;min-width:104px}
+button{font:600 14px inherit;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 14px;cursor:pointer;min-height:40px}
+button.on,button.pri{background:var(--blue);border-color:var(--blue);color:#fff}button.ok{background:var(--ok);border-color:var(--ok);color:#fff}button.no{color:var(--bad);border-color:#e3b9b5}
+button:disabled{opacity:.45;cursor:default}button.sm{padding:6px 11px;min-height:34px;font-size:13px}
+input,select,textarea{width:100%;font-family:inherit;font-size:15px;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+textarea{min-height:150px;resize:vertical}label{display:block;font-size:12.5px;font-weight:600;color:var(--mut);margin:12px 0 4px}
+.it{display:grid;grid-template-columns:54px minmax(0,1fr);gap:11px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;margin:8px 0}
+.it img,.it .ph{width:54px;height:72px;object-fit:cover;border-radius:7px;background:#ddd2bf}
+.it b{display:block;font:600 15.5px/1.25 Georgia,serif;overflow-wrap:break-word}.it small{color:var(--mut);display:block}
+.it .ac{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tag{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:1px 7px;margin-right:5px;background:#fed7aa;color:#7c2d12}.tag.m{background:#dbe4ff;color:#27308c}.tag.x{background:#f6d5d2;color:#8a1c16}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#ed{position:fixed;inset:0;background:var(--bg);overflow-y:auto;z-index:20;padding:14px 14px 110px}#ed .w{padding:0}
+#ed h2{font:700 20px Georgia,serif;margin:4px 0 0}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));z-index:30;display:flex;gap:10px;align-items:center;justify-content:center}
+.bar button{flex:1;max-width:420px;min-height:48px;font-size:15px}
+.pv{max-width:150px;border-radius:8px;display:block;margin-top:8px}
+.msg{padding:10px 12px;border-radius:10px;margin:10px 0;font-size:14px}.msg.e{background:#f6d5d2;color:#8a1c16}.msg.i{background:#e3ecd9;color:#234d2f}
+[hidden]{display:none!important}
+</style></head><body>
+<div class="w">
+<header><h1>Alloexpo · Admin</h1><a href="./">Voir le site ↗</a></header>
+<p class="st" id="st">Chargement…</p><div id="msg"></div>
+<div class="box" id="tokbox" hidden>
+ <b>Connexion (une seule fois sur cet appareil)</b>
+ <p class="st" style="margin:6px 0">Collez votre jeton GitHub (accès « Contents : Read and write » au dépôt <i>expositions</i> uniquement). Il reste enregistré dans ce navigateur et n’est envoyé qu’à GitHub.</p>
+ <input id="tok" type="password" autocomplete="off" placeholder="github_pat_…"><div style="margin-top:10px;display:flex;gap:8px"><button class="pri" id="tokok">Enregistrer le jeton</button></div>
+</div>
+<div id="app" hidden>
+ <div class="tabs" id="tabs"></div>
+ <input id="q" type="search" placeholder="Rechercher un titre ou un lieu…">
+ <div id="list"></div>
+ <div class="box"><button class="sm" id="bak">Télécharger une sauvegarde</button> <button class="sm no" id="out">Oublier le jeton sur cet appareil</button></div>
+</div>
+</div>
+<div id="ed" hidden><div class="w">
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 id="edt"></h2><button class="sm" id="edx">✕ Fermer</button></div>
+ <label>Titre</label><input id="f_t">
+ <div class="g2"><div><label>Lieu</label><input id="f_l" list="lieux"><datalist id="lieux"></datalist></div><div><label>Ville</label><input id="f_v"></div></div>
+ <div class="g2"><div><label>Début</label><input id="f_a" type="date"></div><div><label>Fin</label><input id="f_b" type="date"></div></div>
+ <div class="g2"><div><label>Tag principal (couleur)</label><select id="f_g0"></select></div><div><label>Tag 2</label><select id="f_g1"></select></div></div>
+ <div class="g2"><div><label>Tag 3</label><select id="f_g2"></select></div><div><label>Tag 4</label><select id="f_g3"></select></div></div>
+ <div class="g2"><div><label>Tarif</label><input id="f_px" placeholder="15 €"></div><div><label>Durée de visite</label><input id="f_du" placeholder="1 h 30"></div></div>
+ <label>Page de l’exposition (site du lieu)</label><input id="f_pg" type="url" placeholder="https://…">
+ <div class="g2"><div><label>Billetterie</label><select id="f_bs"><option value="">Aucune / entrée libre</option><option value="open">Ouverte</option><option value="closed">Pas encore ouverte</option><option value="unk">À vérifier</option></select></div><div><label>Lien de billetterie</label><input id="f_bu" type="url" placeholder="https://…"></div></div>
+ <label>Résumé</label><textarea id="f_re"></textarea>
+ <label>Affiche : collez le lien d’une image…</label><input id="f_im" type="url" placeholder="https://…/affiche.jpg">
+ <label>… ou choisissez une image sur cet appareil</label><input id="f_file" type="file" accept="image/*">
+ <img id="f_pv" class="pv" alt="" hidden>
+ <p class="st" id="f_src"></p>
+ <div style="display:flex;gap:8px;margin-top:16px"><button class="pri" id="eds" style="flex:1">Enregistrer la fiche</button></div>
+</div></div>
+<div class="bar"><button class="ok" id="pub" disabled>Rien à publier</button></div>
+<script>
+'use strict';
+const OWNER='Alloexpo',REPO='expositions',API=`https://api.github.com/repos/${OWNER}/${REPO}/contents/`,$=id=>document.getElementById(id);
+let D=null,ADM={e:{},x:[],a:[]},BASE='',SHA=null,TOK='',tab='N',UP={},edId=null,edNew=false;
+try{TOK=localStorage.getItem('alx_tok')||''}catch(e){}
+const el=(t,a={},...k)=>{const n=document.createElement(t);for(const[x,v]of Object.entries(a)){if(x=='text')n.textContent=v;else if(x.startsWith('on'))n[x]=v;else if(v!==false&&v!=null)n.setAttribute(x,v===true?'':v)}k.flat().forEach(c=>c!=null&&n.append(c));return n};
+const msg=(t,k='i')=>{$('msg').replaceChildren(t?el('div',{class:'msg '+k,text:t}):'')},b64=s=>btoa(unescape(encodeURIComponent(s))),ub64=s=>decodeURIComponent(escape(atob(s.replace(/\s/g,''))));
+const fmt=s=>{const m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(s||'');return m?`${+m[3]}/${m[2]}/${m[1]}`:''},okU=u=>/^https?:\/\/[^\s<>"]+$/i.test(u||''),okImg=u=>/^https:\/\/[^\s<>"'`()\\]+$/.test(u||'')||/^img\/[0-9a-f]{16}\.(webp|jpg|png|gif)$/.test(u||'');
+const norm=()=>{ADM.e=ADM.e&&typeof ADM.e=='object'?ADM.e:{};ADM.x=Array.isArray(ADM.x)?ADM.x:[];ADM.a=Array.isArray(ADM.a)?ADM.a:[]};
+const ser=()=>JSON.stringify(ADM),dirty=()=>ser()!==BASE||Object.keys(UP).length>0;
+async function gh(path,opt={}){const r=await fetch(API+path,{...opt,cache:'no-store',headers:{Accept:'application/vnd.github+json',Authorization:'Bearer '+TOK,'X-GitHub-Api-Version':'2022-11-28',...(opt.body?{'Content-Type':'application/json'}:{})}});
+ if(r.status==404&&!opt.method)return null;if(!r.ok){const e=new Error(r.status==401||r.status==403?'Jeton refusé par GitHub (vérifiez qu’il donne l’accès en écriture au dépôt).':'GitHub a répondu '+r.status);e.status=r.status;throw e}return r.json()}
+async function load(){
+ try{D=await(await fetch('data.json?'+Date.now(),{cache:'no-store'})).json()}catch(e){$('st').textContent='Impossible de lire les données du site.';return}
+ if(!TOK){$('tokbox').hidden=false;$('st').textContent='Version '+D.version+' · connexion requise pour modifier.';return}
+ try{const f=await gh('admin.js');if(f){SHA=f.sha;const m=/window\.ADM\s*=\s*(\{[\s\S]*\})\s*;?\s*$/.exec(ub64(f.content));ADM=m?JSON.parse(m[1]):{}}else{SHA=null;ADM={}}}
+ catch(e){if(e.status==401||e.status==403){TOK='';$('tokbox').hidden=false}msg(e.message,'e');$('st').textContent='';return}
+ norm();BASE=ser();$('tokbox').hidden=true;$('app').hidden=false;
+ $('lieux').replaceChildren(...Object.keys(D.venues).sort().map(l=>el('option',{value:l})));
+ ['f_g0','f_g1','f_g2','f_g3'].forEach((id,i)=>$(id).replaceChildren(...(i?[el('option',{value:'',text:'—'})]:[]),...D.tags.map(t=>el('option',{value:t,text:t}))));
+ draw()}
+function view(){const X=new Set(ADM.x),A=new Map(ADM.a.map(n=>[n.id,n])),L=[];
+ D.items.forEach(o=>{const n={...o,...(ADM.e[o.id]||{})};n._x=X.has(o.id);n._m=!!ADM.e[o.id];if(o.nw&&A.has(o.id)){Object.assign(n,A.get(o.id));n._k=true}n._nw=!!o.nw&&!n._k&&!n._x;L.push(n)});
+ ADM.a.forEach(n=>{if(!D.items.some(o=>o.id==n.id))L.push({...n,_new:true})});return L}
+function draw(){const L=view(),q=$('q').value.toLowerCase().trim(),nN=L.filter(o=>o._nw).length,nM=L.filter(o=>o._m||o._k||o._x||o._new).length;
+ $('st').textContent=`Version ${D.version} du ${fmt(D.date)} · ${D.items.length} expositions en cours ou à venir`;
+ $('tabs').replaceChildren(...[['N',`À valider (${nN})`],['T','Toutes'],['M',`Mes modifications (${nM})`]].map(([k,l])=>el('button',{class:tab==k?'on':'',text:l,onclick:()=>{tab=k;draw()}})),el('button',{text:'+ Nouvelle',onclick:()=>edit(null)}));
+ let R=L.filter(o=>tab=='N'?o._nw:tab=='M'?(o._m||o._k||o._x||o._new):true).filter(o=>!q||(o.t+' '+o.l).toLowerCase().includes(q)).sort((a,b)=>(a.a||'').localeCompare(b.a||''));
+ $('list').replaceChildren(...(R.length?R.slice(0,200).map(row):[el('p',{class:'st',text:tab=='N'?'Aucune proposition en attente.':'Rien à afficher.'})]));
+ const n=dirty();$('pub').disabled=!n;$('pub').textContent=n?'Publier mes modifications':'Rien à publier'}
+function imgSrc(im){return UP[im]?'data:image/jpeg;base64,'+UP[im]:okImg(im)?im:''}
+function row(o){const s=imgSrc(o.im),ac=[];
+ if(o._x)ac.push(el('button',{class:'sm',text:'↩ Rétablir',onclick:()=>{ADM.x=ADM.x.filter(i=>i!=o.id);draw()}}));
+ else{if(o._nw)ac.push(el('button',{class:'sm ok',text:'✓ Garder',onclick:()=>{keep(o.id);draw()}}));
+  if(o._k)ac.push(el('button',{class:'sm',text:'↩ Remettre à valider',onclick:()=>{ADM.a=ADM.a.filter(n=>n.id!=o.id);draw()}}));
+  ac.push(el('button',{class:'sm',text:'Modifier',onclick:()=>edit(o.id)}));
+  if(o._m)ac.push(el('button',{class:'sm',text:'↩ Annuler mes modifs',onclick:()=>{delete ADM.e[o.id];draw()}}));
+  ac.push(o._new?el('button',{class:'sm no',text:'Supprimer',onclick:()=>{ADM.a=ADM.a.filter(n=>n.id!=o.id);draw()}}):el('button',{class:'sm no',text:o._nw?'✕ Écarter':'Retirer',onclick:()=>{ADM.a=ADM.a.filter(n=>n.id!=o.id);delete ADM.e[o.id];ADM.x.push(o.id);draw()}}))}
+ return el('div',{class:'it'},s?el('img',{src:s,alt:'',loading:'lazy'}):el('div',{class:'ph'}),el('div',{},
+  el('div',{},o._nw?el('span',{class:'tag',text:'À valider'}):null,o._k?el('span',{class:'tag m',text:'Validée'}):null,o._m?el('span',{class:'tag m',text:'Modifiée'}):null,o._new?el('span',{class:'tag m',text:'Nouvelle'}):null,o._x?el('span',{class:'tag x',text:'Retirée'}):null),
+  el('b',{text:o.t}),el('small',{text:`${o.l||'—'} · ${o.v||''}`}),el('small',{text:`${fmt(o.a)} → ${fmt(o.b)}${o.im?'':' · sans affiche'}`}),el('div',{class:'ac'},ac)))}
+const pick=o=>{const r={};['id','t','l','v','tg','a','b','px','du','pg','re','im','bk','ll','pr'].forEach(k=>{if(o[k]!==undefined&&o[k]!=='')r[k]=o[k]});return r};
+function keep(id){const o=D.items.find(x=>x.id==id);if(o&&!ADM.a.some(n=>n.id==id))ADM.a.push(pick(o))}
+function cur(id){return view().find(o=>o.id==id)}
+function edit(id){edNew=!id;edId=id;const o=id?cur(id):{t:'',l:'',v:'Paris',tg:[],a:'',b:'',px:'',du:'1 h 30',pg:'',re:'',im:''};
+ $('edt').textContent=edNew?'Nouvelle exposition':'Modifier la fiche';['t','l','v','a','b','px','du','pg','re'].forEach(k=>$('f_'+k).value=o[k]||'');
+ [0,1,2,3].forEach(i=>$('f_g'+i).value=(o.tg||[])[i]||(i?'':D.tags[0]));$('f_bs').value=o.bk?o.bk.s:'';$('f_bu').value=o.bk&&o.bk.u||'';
+ $('f_im').value=/^https:/.test(o.im||'')?o.im:'';$('f_im').dataset.cur=o.im||'';$('f_file').value='';pv(o.im||'');$('f_src').textContent=o.src?'Source actuelle de l’affiche : '+o.src:'';
+ $('ed').hidden=false;$('ed').scrollTop=0}
+function pv(im){const s=imgSrc(im);$('f_pv').hidden=!s;if(s)$('f_pv').src=s}
+$('f_im').oninput=()=>{const u=$('f_im').value.trim();if(okImg(u)){$('f_im').dataset.cur=u;pv(u)}};
+$('f_file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const w=Math.min(660,im.width),h=Math.round(im.height*w/im.width),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(im,0,0,w,h);
+  const d=c.toDataURL('image/jpeg',.86).split(',')[1],n='img/'+[...crypto.getRandomValues(new Uint8Array(8))].map(b=>b.toString(16).padStart(2,'0')).join('')+'.jpg';UP[n]=d;$('f_im').value='';$('f_im').dataset.cur=n;pv(n)};im.onerror=()=>alertIn('Image illisible.');im.src=r.result};r.readAsDataURL(f)};
+const alertIn=t=>{msg(t,'e');window.scrollTo(0,0)};
+$('edx').onclick=()=>{$('ed').hidden=true};
+$('eds').onclick=()=>{const g=k=>$('f_'+k).value.trim(),n={t:g('t'),l:g('l'),v:g('v')||'Paris',a:g('a'),b:g('b'),px:g('px'),du:g('du'),pg:g('pg'),re:g('re')};
+ if(!n.t||!n.a||!n.b){alert('Titre, début et fin sont obligatoires.');return}if(n.b<n.a){alert('La fin est avant le début.');return}
+ if(n.pg&&!okU(n.pg)){alert('Le lien de la page doit commencer par https://');return}const bu=g('bu');if(bu&&!okU(bu)){alert('Le lien de billetterie doit commencer par https://');return}
+ n.tg=[...new Set([0,1,2,3].map(i=>$('f_g'+i).value).filter(Boolean))];n.bk=$('f_bs').value?{s:$('f_bs').value,u:bu||null}:null;n.im=$('f_im').dataset.cur||'';
+ const V=D.venues[n.l];if(V){n.ll=V.ll;n.pr=V.pr}else n.pr=D.idf.includes(n.v)?1:0;
+ if(edNew){n.id=n.t+'|'+n.a;if(view().some(o=>o.id==n.id)){alert('Cette exposition existe déjà.');return}ADM.a.push(n)}
+ else{const i=ADM.a.findIndex(x=>x.id==edId);if(i>=0)ADM.a[i]={...ADM.a[i],...n,id:edId};
+  else{const o=D.items.find(x=>x.id==edId),ch={};Object.keys(n).forEach(k=>{if(JSON.stringify(n[k]??null)!==JSON.stringify(o[k]??(k=='bk'?null:k=='tg'?[]:'')))ch[k]=n[k]});
+   if(o.nw){ADM.a.push({...pick(o),...n,id:edId})}else if(Object.keys(ch).length)ADM.e[edId]=ch;else delete ADM.e[edId]}}
+ $('ed').hidden=true;draw()};
+$('q').oninput=draw;
+$('tokok').onclick=()=>{TOK=$('tok').value.trim();if(!TOK)return;try{localStorage.setItem('alx_tok',TOK)}catch(e){}$('tok').value='';msg('');load()};
+$('out').onclick=()=>{if(confirm('Oublier le jeton sur cet appareil ?')){try{localStorage.removeItem('alx_tok')}catch(e){}location.reload()}};
+$('bak').onclick=()=>{const a=el('a',{href:URL.createObjectURL(new Blob([JSON.stringify({date:new Date().toISOString(),donnees:D,modifications:ADM},null,1)],{type:'application/json'})),download:'alloexpo-sauvegarde.json'});document.body.append(a);a.click();a.remove()};
+$('pub').onclick=async()=>{if(!dirty())return;$('pub').disabled=true;$('pub').textContent='Publication…';
+ try{const used=new Set([...ADM.a.map(n=>n.im),...Object.values(ADM.e).map(e=>e.im)]);
+  for(const[n,d]of Object.entries(UP)){if(used.has(n))await gh(n,{method:'PUT',body:JSON.stringify({message:'Admin : affiche',content:d})});delete UP[n]}
+  const cur=await gh('admin.js');const r=await gh('admin.js',{method:'PUT',body:JSON.stringify({message:'Admin : modifications depuis la page Admin',content:b64('window.ADM='+ser()+';\n'),...(cur?{sha:cur.sha}:{})})});
+  SHA=r.content.sha;BASE=ser();msg('Publié. Le site se met à jour tout seul dans une à dix minutes.');window.scrollTo(0,0)}
+ catch(e){msg('Échec de la publication : '+e.message,'e');window.scrollTo(0,0)}draw()};
+window.addEventListener('beforeunload',e=>{if(dirty()){e.preventDefault();e.returnValue=''}});
+load();
+</script></body></html>
