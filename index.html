@@ -391,7 +391,7 @@ function render(){
  subUI();alerts();
  const IC={C:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',V:'<rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>',W:'<path d="M6.5 3.5h11v17l-5.5-4.2-5.5 4.2z"/>',N:'<path d="M19.5 14.2A8 8 0 0 1 9.8 4.5a8 8 0 1 0 9.7 9.7z"/>',M:'<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>'};
  $('bn').innerHTML=[['C','En cours'],['V','À venir'],['W','Envies'],['N','Nocturnes'],['M','Carte']].map(([k,l])=>`<button data-act="tab" data-k="${k}" class="${tab==k?'on':''}"${tab==k?' aria-current="page"':''}><svg viewBox="0 0 24 24" aria-hidden="true">${IC[k]}</svg><span>${l}</span>${k=='W'&&nW?`<i>${nW}</i>`:''}</button>`).join('');
- const sq=tab=='C'||tab=='W';$('qf').hidden=!sq;if(sq)$('qf').innerHTML=[['s','⏳ Bientôt fini'],['n','🌙 Nocturne ce soir'],['g','Gratuit aujourd’hui'],['p','📍 Près de moi']].map(([k,l])=>`<button data-act="qf" data-k="${k}" class="${(k=='p'?!!POS:qf.has(k))?'on':''}" aria-pressed="${k=='p'?!!POS:qf.has(k)}">${l}</button>`).join('');
+ const sq=tab=='C'||tab=='W';$('qf').hidden=!sq;if(sq)$('qf').innerHTML=[['s','⏳ Bientôt fini'],['n','🌙 Nocturne ce soir'],['g','🎟 Gratuit aujourd’hui'],['p','📍 Près de moi']].map(([k,l])=>`<button data-act="qf" data-k="${k}" class="${(k=='p'?!!POS:qf.has(k))?'on':''}" aria-pressed="${k=='p'?!!POS:qf.has(k)}">${l}</button>`).join('');
  $('list').hidden=isM;$('mapw').hidden=!isM;$('leg').hidden=isM||isNt;
  if(isM){drawMap();return}
  if(isNt){$('list').innerHTML=nocUI();return}
