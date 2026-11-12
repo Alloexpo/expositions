@@ -238,12 +238,11 @@ body{background:var(--bg)}
 .card{border-radius:18px;box-shadow:0 8px 22px -20px rgba(40,10,20,.55)}
 h3{letter-spacing:-.005em}
 /* couleur du tag principal : voile discret, pastille pleine, rappel sur les cartes compactes */
-.card:not(.mar):not(.nat){background:linear-gradient(180deg,color-mix(in srgb,var(--c) 11%,var(--card)) 0,var(--card) 96px)}
 .chips span:first-child{background:color-mix(in srgb,var(--c) 80%,#1a1014);border-color:transparent;color:#fff}
 .mt{display:none;align-items:center;gap:6px;margin-top:3px;font-size:11.5px;font-weight:600;letter-spacing:.01em;color:color-mix(in srgb,var(--c) 60%,var(--ink))}
 .mt i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c)}
 @media(max-width:700px){.card:not(.open) .mt{display:flex}
- .card.open:not(.mar):not(.nat){background:linear-gradient(180deg,color-mix(in srgb,var(--c) 24%,var(--card)) 0,var(--card) 190px);border-top-width:8px}}
+ .card.open{border-top-width:8px}}
 .qf button.on,.bn button.on{color:var(--acc)}.qf button.on{background:var(--acc);border-color:var(--acc);color:#fff}
 .bn button i{background:var(--acc)}
 #q{border-radius:14px}
