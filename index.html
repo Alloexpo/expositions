@@ -224,8 +224,8 @@ input,select{border-radius:12px}
 :root{--bg:#171118;--card:#211822;--ink:#f3e9dc;--mut:#b3a3a4;--line:#3a2b36;--acc:#f2a05c;--accb:#f3e9dc;--red:#e8604a;--chip:#2c2029;--hp:#1d151e;--f1:#5b1a1f;--f2:#b8431f;--f3:#e08a2c}
 :root[data-theme="light"]{--bg:#f3ecdf;--card:#fffaf1;--ink:#2a1c27;--mut:#7c6b6e;--line:#e4d8c4;--acc:#a8371f;--accb:#27308c;--red:#c8351f;--chip:#efe5d3;--hp:#faf4e8;--f1:#7d2a22;--f2:#cf5a22;--f3:#eaa23a}
 body{background:var(--bg)}
-.hd{position:relative;margin-top:8px;padding:18px 18px 20px;border-radius:22px;box-shadow:0 10px 30px -18px rgba(60,10,10,.7);
- background:radial-gradient(130% 100% at 50% 50%,transparent 58%,rgba(40,8,12,.30)),linear-gradient(180deg,var(--f1) 0%,var(--f2) 20%,var(--f2) 48%,color-mix(in srgb,var(--f2) 55%,var(--f1)) 62%,var(--f3) 78%,var(--f3) 88%,color-mix(in srgb,var(--f3) 60%,var(--f1)) 100%)}
+.hd{position:relative;margin-top:8px;padding:18px 18px 20px;border-radius:22px;box-shadow:0 10px 30px -18px rgba(12,16,60,.8);
+ background:#1f2670 url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 170 120'><circle cx='104' cy='58' r='33' fill='none' stroke='%23f3e9dc' stroke-width='2'/><circle cx='104' cy='58' r='14' fill='%23e8604a'/><path d='M34 102 L56 62 L78 102 Z' fill='%23f0b429'/><path d='M14 30 L160 96' stroke='%23f3e9dc' stroke-width='1.6'/><rect x='140' y='20' width='15' height='15' fill='%235fa8d3'/><path d='M46 24 q13 -13 26 0 t26 0' stroke='%23f0b429' stroke-width='2' fill='none'/></svg>") no-repeat right 66px center/auto 108%}
 .hd h1{font:700 34px/1 Fraunces,Georgia,serif;letter-spacing:-.01em;color:#fff7ea;margin:0}
 .hd .tl{color:rgba(255,244,226,.86);font-size:15px;margin-top:4px}
 .mk{width:50px;height:50px;border-radius:12px;filter:none;box-shadow:0 4px 14px rgba(30,5,8,.35)}
@@ -248,7 +248,7 @@ h3{letter-spacing:-.005em}
 .bn button i{background:var(--acc)}
 #q{border-radius:14px}
 :root .cd b{font-weight:700}
-@media(max-width:700px){.hd{padding:14px 14px 16px;border-radius:18px}.hd h1{font-size:28px}.hd .tl{font-size:13.5px}.mk{width:44px;height:44px}.card{border-radius:14px}.card.open{border-radius:0}}
+@media(max-width:700px){.hd{padding:14px 14px 16px;border-radius:18px;background-position:right 60px top 5px;background-size:auto 56%}.hd h1{font-size:28px}.hd .tl{font-size:13.5px}.mk{width:44px;height:44px}.card{border-radius:14px}.card.open{border-radius:0}}
 </style></head><body><div class="w">
 <header class="hd"><div class="brand"><svg class="mk" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="15" fill="#f4ead8"/><circle cx="27" cy="29" r="17" fill="#27308c"/><circle cx="39" cy="38" r="11" fill="#d8432e" fill-opacity=".92"/><circle cx="46" cy="17" r="5.5" fill="#f0b429"/><path d="M9 54 52 9" stroke="#1d1420" stroke-width="2.6" stroke-linecap="round"/><path d="M12 14h13" stroke="#1d1420" stroke-width="2.2" stroke-linecap="round"/></svg><div><h1>Alloexpo</h1><p class="tl">Expositions d’ici et d’ailleurs</p></div></div><button class="ic" id="th" aria-label="Changer de thème">☀️</button></header><div class="hrow"><div class="tri"><i></i><i></i><i></i></div><div class="now" id="now"><div class="dt"><span id="today"></span><span class="dot">·</span><span id="clock"></span></div><span id="fsb"></span><span id="ver" class="ver"></span></div></div><div class="sub" id="sub"></div><div id="alert"></div><div id="nojs" class="nojs"><b>Cette page est interactive.</b> L’aperçu de fichiers de votre téléphone ne l’exécute pas : ouvrez-la dans Safari ou Chrome (bouton Partager → « Ouvrir dans Safari »), ou utilisez le lien en ligne.</div>
 <div class="top"><input id="q" type="search" placeholder="Rechercher un titre, un lieu, un tag…">
