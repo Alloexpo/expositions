@@ -42,6 +42,7 @@ textarea{min-height:150px;resize:vertical}label{display:block;font-size:12.5px;f
 </div>
 <div id="app" hidden>
  <div class="tabs" id="tabs"></div>
+ <p class="st" id="help"></p>
  <input id="q" type="search" placeholder="Rechercher un titre ou un lieu…">
  <div id="list"></div>
  <div class="box"><button class="sm" id="bak">Télécharger une sauvegarde</button> <button class="sm no" id="out">Oublier le jeton sur cet appareil</button></div>
@@ -68,7 +69,7 @@ textarea{min-height:150px;resize:vertical}label{display:block;font-size:12.5px;f
 <script>
 'use strict';
 const OWNER='Alloexpo',REPO='expositions',API=`https://api.github.com/repos/${OWNER}/${REPO}/contents/`,$=id=>document.getElementById(id);
-let D=null,ADM={e:{},x:[],a:[]},BASE='',SHA=null,TOK='',tab='N',UP={},edId=null,edNew=false;
+let D=null,ADM={e:{},x:[],a:[]},BASE='',SHA=null,TOK='',tab='T',UP={},edId=null,edNew=false;
 try{TOK=localStorage.getItem('alx_tok')||''}catch(e){}
 const el=(t,a={},...k)=>{const n=document.createElement(t);for(const[x,v]of Object.entries(a)){if(x=='text')n.textContent=v;else if(x.startsWith('on'))n[x]=v;else if(v!==false&&v!=null)n.setAttribute(x,v===true?'':v)}k.flat().forEach(c=>c!=null&&n.append(c));return n};
 const msg=(t,k='i')=>{$('msg').replaceChildren(t?el('div',{class:'msg '+k,text:t}):'')},b64=s=>btoa(unescape(encodeURIComponent(s))),ub64=s=>decodeURIComponent(escape(atob(s.replace(/\s/g,''))));
@@ -82,7 +83,7 @@ async function load(){
  if(!TOK){$('tokbox').hidden=false;$('st').textContent='Version '+D.version+' · connexion requise pour modifier.';return}
  try{const f=await gh('admin.js');if(f){SHA=f.sha;const m=/window\.ADM\s*=\s*(\{[\s\S]*\})\s*;?\s*$/.exec(ub64(f.content));ADM=m?JSON.parse(m[1]):{}}else{SHA=null;ADM={}}}
  catch(e){if(e.status==401||e.status==403){TOK='';$('tokbox').hidden=false}msg(e.message,'e');$('st').textContent='';return}
- norm();BASE=ser();$('tokbox').hidden=true;$('app').hidden=false;
+ norm();BASE=ser();$('tokbox').hidden=true;$('app').hidden=false;if(!window._t0){window._t0=1;tab=view().some(o=>o._nw)?'N':'T'}
  $('lieux').replaceChildren(...Object.keys(D.venues).sort().map(l=>el('option',{value:l})));
  ['f_g0','f_g1','f_g2','f_g3'].forEach((id,i)=>$(id).replaceChildren(...(i?[el('option',{value:'',text:'—'})]:[]),...D.tags.map(t=>el('option',{value:t,text:t}))));
  draw()}
@@ -91,16 +92,16 @@ function view(){const X=new Set(ADM.x),A=new Map(ADM.a.map(n=>[n.id,n])),L=[];
  ADM.a.forEach(n=>{if(!D.items.some(o=>o.id==n.id))L.push({...n,_new:true})});return L}
 function draw(){const L=view(),q=$('q').value.toLowerCase().trim(),nN=L.filter(o=>o._nw).length,nM=L.filter(o=>o._m||o._k||o._x||o._new).length;
  $('st').textContent=`Version ${D.version} du ${fmt(D.date)} · ${D.items.length} expositions en cours ou à venir`;
- $('tabs').replaceChildren(...[['N',`À valider (${nN})`],['T','Toutes'],['M',`Mes modifications (${nM})`]].map(([k,l])=>el('button',{class:tab==k?'on':'',text:l,onclick:()=>{tab=k;draw()}})),el('button',{text:'+ Nouvelle',onclick:()=>edit(null)}));
+ $('tabs').replaceChildren(...[['N',`À valider (${nN})`],['T','Toutes les expositions'],['M',`Mes modifications (${nM})`]].map(([k,l])=>el('button',{class:tab==k?'on':'',text:l,onclick:()=>{tab=k;draw()}})),el('button',{text:'+ Nouvelle',onclick:()=>edit(null)}));
  let R=L.filter(o=>tab=='N'?o._nw:tab=='M'?(o._m||o._k||o._x||o._new):true).filter(o=>!q||(o.t+' '+o.l).toLowerCase().includes(q)).sort((a,b)=>(a.a||'').localeCompare(b.a||''));
- $('list').replaceChildren(...(R.length?R.slice(0,200).map(row):[el('p',{class:'st',text:tab=='N'?'Aucune proposition en attente.':'Rien à afficher.'})]));
- const n=dirty();$('pub').disabled=!n;$('pub').textContent=n?'Publier mes modifications':'Rien à publier'}
+ $('list').replaceChildren(...(R.length?R.slice(0,200).map(row):[el('p',{class:'st',text:tab=='N'?'Aucune proposition en attente. Pour modifier ou retirer une exposition, ouvrez « Toutes les expositions ».':'Rien à afficher.'})]));
+ $('help').innerHTML=tab=='N'?'<b>Nouvelles propositions</b> : « ✓ Garder » les ajoute au site, « ✕ Écarter » les supprime pour toujours.':tab=='T'?'<b>Toutes les expositions du site</b> : sur chaque ligne, <b>Modifier</b> (texte, dates, lien, <b>affiche</b>) ou <b>Retirer</b>. Pensez à « Publier mes modifications » en bas.':'<b>Ce que vous avez changé</b> : rien n’est en ligne tant que vous n’avez pas appuyé sur « Publier mes modifications ».';const n=dirty();$('pub').disabled=!n;$('pub').textContent=n?'Publier mes modifications':'Rien à publier'}
 function imgSrc(im){return UP[im]?'data:image/jpeg;base64,'+UP[im]:okImg(im)?im:''}
 function row(o){const s=imgSrc(o.im),ac=[];
  if(o._x)ac.push(el('button',{class:'sm',text:'↩ Rétablir',onclick:()=>{ADM.x=ADM.x.filter(i=>i!=o.id);draw()}}));
  else{if(o._nw)ac.push(el('button',{class:'sm ok',text:'✓ Garder',onclick:()=>{keep(o.id);draw()}}));
   if(o._k)ac.push(el('button',{class:'sm',text:'↩ Remettre à valider',onclick:()=>{ADM.a=ADM.a.filter(n=>n.id!=o.id);draw()}}));
-  ac.push(el('button',{class:'sm',text:'Modifier',onclick:()=>edit(o.id)}));
+  ac.push(el('button',{class:'sm',text:'Modifier',onclick:()=>edit(o.id)}));ac.push(el('button',{class:'sm',text:'🖼 Changer l’affiche',onclick:()=>{edit(o.id);setTimeout(()=>{const f=$('f_im');f.scrollIntoView({block:'center'});f.focus()},60)}}));
   if(o._m)ac.push(el('button',{class:'sm',text:'↩ Annuler mes modifs',onclick:()=>{delete ADM.e[o.id];draw()}}));
   ac.push(o._new?el('button',{class:'sm no',text:'Supprimer',onclick:()=>{ADM.a=ADM.a.filter(n=>n.id!=o.id);draw()}}):el('button',{class:'sm no',text:o._nw?'✕ Écarter':'Retirer',onclick:()=>{ADM.a=ADM.a.filter(n=>n.id!=o.id);delete ADM.e[o.id];ADM.x.push(o.id);draw()}}))}
  return el('div',{class:'it'},s?el('img',{src:s,alt:'',loading:'lazy'}):el('div',{class:'ph'}),el('div',{},
