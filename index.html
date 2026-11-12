@@ -240,6 +240,7 @@ body{background:var(--bg)}
 h3{letter-spacing:-.005em}
 /* couleur du tag principal : voile discret, pastille pleine, rappel sur les cartes compactes */
 .chips span:first-child{background:color-mix(in srgb,var(--c) 80%,#1a1014);border-color:transparent;color:#fff}
+.chips span+span{background:color-mix(in srgb,var(--c) 16%,var(--card));border-color:color-mix(in srgb,var(--c) 70%,var(--card));color:color-mix(in srgb,var(--c) 55%,var(--ink))}
 .mt{display:none;align-items:center;gap:6px;margin-top:3px;font-size:11.5px;font-weight:600;letter-spacing:.01em;color:color-mix(in srgb,var(--c) 60%,var(--ink))}
 .mt i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c)}
 @media(max-width:700px){.card:not(.open) .mt{display:flex}
